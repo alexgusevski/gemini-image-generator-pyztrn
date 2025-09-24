@@ -43,6 +43,7 @@ export class ImageService {
       const { data: { session } } = await supabase.auth.getSession();
       
       // Call the Edge Function to generate the image
+      console.log('Calling Edge Function with imageId:', insertedImage.id);
       const { data: functionResult, error: functionError } = await supabase.functions.invoke(
         'generate-image',
         {
@@ -55,6 +56,8 @@ export class ImageService {
           }
         }
       );
+
+      console.log('Edge Function response:', { functionResult, functionError });
 
       if (functionError) {
         console.error('Edge function error:', functionError);

@@ -50,7 +50,14 @@ export default function ImageDisplay({ imageUri, isLoading, onRetry, error }: Im
   if (imageUri) {
     return (
       <View style={styles.container}>
-        <Image source={{ uri: imageUri }} style={styles.image} resizeMode="contain" />
+        <Image 
+          source={{ uri: imageUri }} 
+          style={styles.image} 
+          resizeMode="contain"
+          onError={() => {
+            console.error('Failed to load image:', imageUri);
+          }}
+        />
       </View>
     );
   }

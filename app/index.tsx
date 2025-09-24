@@ -17,7 +17,7 @@ export default function ImageGeneratorScreen() {
   const [prompt, setPrompt] = useState('');
   const [showHistory, setShowHistory] = useState(false);
   const [user, setUser] = useState<any>(null);
-  const [showStatusMessage, setShowStatusMessage] = useState(true);
+
   
   const {
     isLoading,
@@ -26,6 +26,7 @@ export default function ImageGeneratorScreen() {
     currentImageId,
     generateImage,
     clearImage,
+    clearError,
     deleteImage
   } = useImageGeneration();
 
@@ -167,14 +168,14 @@ export default function ImageGeneratorScreen() {
           </View>
         </View>
 
-        {/* Status Message */}
-        {showStatusMessage && (
+        {/* Status Message - Only show if there's an error or important info */}
+        {error && (
           <View style={commonStyles.section}>
             <StatusMessage
-              type="info"
-              title="Demo Mode Active"
-              message="Currently using placeholder images from Unsplash. To enable actual AI image generation, configure your GEMINI_API_KEY in the Supabase Edge Function environment variables."
-              onDismiss={() => setShowStatusMessage(false)}
+              type="error"
+              title="Generation Failed"
+              message={error}
+              onDismiss={clearError}
             />
           </View>
         )}

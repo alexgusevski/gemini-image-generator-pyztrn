@@ -11,6 +11,7 @@ export interface UseImageGenerationReturn {
   generateImage: (params: GenerateImageParams) => Promise<GenerateImageResult>;
   pollImageStatus: (imageId: string) => Promise<void>;
   clearImage: () => void;
+  clearError: () => void;
   deleteImage: (imageId: string) => Promise<boolean>;
 }
 
@@ -73,9 +74,10 @@ export function useImageGeneration(): UseImageGenerationReturn {
           case 'completed':
             if (imageData.image_url) {
               setGeneratedImage(imageData.image_url);
-              console.log('Image generation completed successfully');
+              console.log('Image generation completed successfully with URL:', imageData.image_url);
               return;
             } else {
+              console.error('Image completed but no URL available:', imageData);
               throw new Error('Image completed but no URL available');
             }
             
@@ -113,6 +115,11 @@ export function useImageGeneration(): UseImageGenerationReturn {
     setIsLoading(false);
   }, []);
 
+  const clearError = useCallback(() => {
+    console.log('Clearing error');
+    setError(null);
+  }, []);
+
   const deleteImage = useCallback(async (imageId: string): Promise<boolean> => {
     try {
       console.log('Deleting image:', imageId);
@@ -143,6 +150,7 @@ export function useImageGeneration(): UseImageGenerationReturn {
     generateImage,
     pollImageStatus,
     clearImage,
+    clearError,
     deleteImage
   };
 }
