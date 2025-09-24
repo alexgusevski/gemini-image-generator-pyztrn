@@ -10,12 +10,14 @@ import Button from '../components/Button';
 import ImageDisplay from '../components/ImageDisplay';
 import ImageHistory from '../components/ImageHistory';
 import LoadingSpinner from '../components/LoadingSpinner';
+import StatusMessage from '../components/StatusMessage';
 import Icon from '../components/Icon';
 
 export default function ImageGeneratorScreen() {
   const [prompt, setPrompt] = useState('');
   const [showHistory, setShowHistory] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const [showStatusMessage, setShowStatusMessage] = useState(true);
   
   const {
     isLoading,
@@ -164,6 +166,18 @@ export default function ImageGeneratorScreen() {
             </TouchableOpacity>
           </View>
         </View>
+
+        {/* Status Message */}
+        {showStatusMessage && (
+          <View style={commonStyles.section}>
+            <StatusMessage
+              type="info"
+              title="Demo Mode Active"
+              message="Currently using placeholder images from Unsplash. To enable actual AI image generation, configure your GEMINI_API_KEY in the Supabase Edge Function environment variables."
+              onDismiss={() => setShowStatusMessage(false)}
+            />
+          </View>
+        )}
 
         {/* Prompt Input */}
         <View style={commonStyles.section}>

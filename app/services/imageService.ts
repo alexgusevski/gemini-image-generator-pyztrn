@@ -51,17 +51,38 @@ export class ImageService {
             imageId: insertedImage.id
           },
           headers: {
-            Authorization: `Bearer ${session?.access_token || ''}`,
+            Authorization: `Bearer ${session?.access_token || supabase.supabaseKey}`,
           }
         }
       );
 
       if (functionError) {
         console.error('Edge function error:', functionError);
+        
+        // Update the database record to reflect the error
+        await supabase
+          .from('generated_images')
+          .update({ 
+            status: 'failed',
+            error_message: functionError.message,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', insertedImage.id);
+        
         throw new Error(`Image generation failed: ${functionError.message}`);
       }
 
       if (!functionResult.success) {
+        // Update the database record to reflect the error
+        await supabase
+          .from('generated_images')
+          .update({ 
+            status: 'failed',
+            error_message: functionResult.error,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', insertedImage.id);
+        
         throw new Error(functionResult.error || 'Image generation failed');
       }
 
