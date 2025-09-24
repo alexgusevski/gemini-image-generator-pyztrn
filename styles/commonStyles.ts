@@ -2,120 +2,148 @@
 import { StyleSheet, ViewStyle, TextStyle } from 'react-native';
 
 export const colors = {
-  primary: '#6366F1',      // Indigo
-  secondary: '#8B5CF6',    // Purple
-  accent: '#10B981',       // Emerald
-  background: '#FFFFFF',   // White
-  backgroundAlt: '#F8FAFC', // Light gray
-  text: '#1F2937',         // Dark gray
-  textSecondary: '#6B7280', // Medium gray
-  grey: '#E5E7EB',         // Light gray
-  card: '#FFFFFF',         // White
-  border: '#E5E7EB',       // Light gray border
-  success: '#10B981',      // Green
-  error: '#EF4444',        // Red
-  warning: '#F59E0B',      // Amber
+  primary: '#6366F1',
+  secondary: '#8B5CF6',
+  accent: '#06B6D4',
+  background: '#FFFFFF',
+  backgroundAlt: '#F8FAFC',
+  surface: '#FFFFFF',
+  text: '#1F2937',
+  textSecondary: '#6B7280',
+  border: '#E5E7EB',
+  success: '#10B981',
+  warning: '#F59E0B',
+  error: '#EF4444',
+  info: '#3B82F6',
 };
 
-export const buttonStyles = StyleSheet.create({
-  primary: {
-    backgroundColor: colors.primary,
-    alignSelf: 'center',
-    width: '100%',
-  },
-  secondary: {
-    backgroundColor: colors.backgroundAlt,
-    borderWidth: 1,
-    borderColor: colors.border,
-    alignSelf: 'center',
-    width: '100%',
-  },
-  accent: {
-    backgroundColor: colors.accent,
-    alignSelf: 'center',
-    width: '100%',
-  },
-});
-
 export const commonStyles = StyleSheet.create({
-  wrapper: {
-    backgroundColor: colors.background,
-    width: '100%',
-    height: '100%',
-  },
   container: {
     flex: 1,
     backgroundColor: colors.background,
-    width: '100%',
-    height: '100%',
-  },
+  } as ViewStyle,
+  
   content: {
     flex: 1,
-    paddingHorizontal: 20,
-    paddingTop: 20,
-  },
+    paddingHorizontal: 16,
+  } as ViewStyle,
+  
+  section: {
+    marginBottom: 24,
+  } as ViewStyle,
+  
   title: {
     fontSize: 28,
-    fontWeight: '800',
+    fontWeight: '700',
     color: colors.text,
-    marginBottom: 8,
-  },
+    textAlign: 'center',
+    marginLeft: 12,
+  } as TextStyle,
+  
   subtitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '600',
     color: colors.text,
-    marginBottom: 16,
-  },
+    marginBottom: 8,
+  } as TextStyle,
+  
   text: {
     fontSize: 16,
-    fontWeight: '400',
     color: colors.text,
     lineHeight: 24,
-  },
+  } as TextStyle,
+  
   textSecondary: {
     fontSize: 14,
-    fontWeight: '400',
     color: colors.textSecondary,
     lineHeight: 20,
-  },
-  section: {
-    width: '100%',
-    marginBottom: 24,
-  },
+  } as TextStyle,
+  
+  textSmall: {
+    fontSize: 12,
+    color: colors.textSecondary,
+    lineHeight: 16,
+  } as TextStyle,
+  
   card: {
-    backgroundColor: colors.card,
-    borderColor: colors.border,
-    borderWidth: 1,
+    backgroundColor: colors.surface,
     borderRadius: 12,
     padding: 16,
-    marginVertical: 8,
-    width: '100%',
-    boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.1)',
-    elevation: 2,
-  },
-  input: {
-    backgroundColor: colors.backgroundAlt,
-    borderColor: colors.border,
     borderWidth: 1,
+    borderColor: colors.border,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3.84,
+    elevation: 5,
+  } as ViewStyle,
+  
+  button: {
+    backgroundColor: colors.primary,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
     borderRadius: 8,
-    padding: 12,
-    fontSize: 16,
-    color: colors.text,
-    minHeight: 44,
-  },
-  inputMultiline: {
-    minHeight: 100,
-    textAlignVertical: 'top',
-  },
-  centerContent: {
     alignItems: 'center',
     justifyContent: 'center',
-  },
+  } as ViewStyle,
+  
+  buttonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+  } as TextStyle,
+  
+  input: {
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    fontSize: 16,
+    color: colors.text,
+    backgroundColor: colors.background,
+  } as ViewStyle,
+  
+  inputFocused: {
+    borderColor: colors.primary,
+  } as ViewStyle,
+  
+  inputError: {
+    borderColor: colors.error,
+  } as ViewStyle,
+  
+  errorText: {
+    color: colors.error,
+    fontSize: 14,
+    marginTop: 4,
+  } as TextStyle,
+  
+  centerContent: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  } as ViewStyle,
+  
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
+  } as ViewStyle,
+  
   spaceBetween: {
     justifyContent: 'space-between',
-  },
+  } as ViewStyle,
+  
+  shadow: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  } as ViewStyle,
 });
