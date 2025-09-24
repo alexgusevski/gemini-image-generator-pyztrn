@@ -51,25 +51,16 @@ export class ImageService {
           imageId: insertedImage.id
         };
         
-        const requestBodyString = JSON.stringify(requestBody);
         console.log('Sending request to Edge Function with body:', requestBody);
-        console.log('Request body as string:', requestBodyString);
-        console.log('Request body string length:', requestBodyString.length);
         console.log('Session available:', !!session);
         console.log('Access token available:', !!session?.access_token);
         
-        const headers = {
-          Authorization: `Bearer ${session?.access_token || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0c2Ntbm11eGJ1ZXl0eHhlZXp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg3MDQwNzAsImV4cCI6MjA3NDI4MDA3MH0.kswz8ggvMejVw0Myx32r2IKeQKhq9nVSdQdK4ac13dQ'}`,
-          'Content-Type': 'application/json'
-        };
-        
-        console.log('Request headers:', headers);
-        
+        // The supabase.functions.invoke() method expects the body as an object, not a string
+        // It will automatically stringify it and set the correct headers
         const { data: functionResult, error: functionError } = await supabase.functions.invoke(
           'generate-image',
           {
-            body: requestBodyString,
-            headers: headers
+            body: requestBody, // Pass as object, not stringified
           }
         );
 
