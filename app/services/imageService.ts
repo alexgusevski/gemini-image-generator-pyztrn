@@ -46,13 +46,17 @@ export class ImageService {
       console.log('Calling Edge Function with imageId:', insertedImage.id);
       
       try {
+        const requestBody = {
+          prompt: params.prompt,
+          imageId: insertedImage.id
+        };
+        
+        console.log('Sending request to Edge Function with body:', requestBody);
+        
         const { data: functionResult, error: functionError } = await supabase.functions.invoke(
           'generate-image',
           {
-            body: {
-              prompt: params.prompt,
-              imageId: insertedImage.id
-            },
+            body: JSON.stringify(requestBody),
             headers: {
               Authorization: `Bearer ${session?.access_token || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0c2Ntbm11eGJ1ZXl0eHhlZXp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg3MDQwNzAsImV4cCI6MjA3NDI4MDA3MH0.kswz8ggvMejVw0Myx32r2IKeQKhq9nVSdQdK4ac13dQ'}`,
               'Content-Type': 'application/json'
