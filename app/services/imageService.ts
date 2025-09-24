@@ -44,57 +44,80 @@ export class ImageService {
       
       // Call the Edge Function to generate the image
       console.log('Calling Edge Function with imageId:', insertedImage.id);
-      const { data: functionResult, error: functionError } = await supabase.functions.invoke(
-        'generate-image',
-        {
-          body: {
-            prompt: params.prompt,
-            imageId: insertedImage.id
-          },
-          headers: {
-            Authorization: `Bearer ${session?.access_token || supabase.supabaseKey}`,
+      
+      try {
+        const { data: functionResult, error: functionError } = await supabase.functions.invoke(
+          'generate-image',
+          {
+            body: {
+              prompt: params.prompt,
+              imageId: insertedImage.id
+            },
+            headers: {
+              Authorization: `Bearer ${session?.access_token || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0c2Ntbm11eGJ1ZXl0eHhlZXp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg3MDQwNzAsImV4cCI6MjA3NDI4MDA3MH0.kswz8ggvMejVw0Myx32r2IKeQKhq9nVSdQdK4ac13dQ'}`,
+              'Content-Type': 'application/json'
+            }
           }
+        );
+
+        console.log('Edge Function response:', { functionResult, functionError });
+
+        if (functionError) {
+          console.error('Edge function error:', functionError);
+          
+          // Update the database record to reflect the error
+          await supabase
+            .from('generated_images')
+            .update({ 
+              status: 'failed',
+              error_message: functionError.message || 'Edge Function error',
+              updated_at: new Date().toISOString()
+            })
+            .eq('id', insertedImage.id);
+          
+          throw new Error(`Image generation failed: ${functionError.message || 'Edge Function error'}`);
         }
-      );
 
-      console.log('Edge Function response:', { functionResult, functionError });
-
-      if (functionError) {
-        console.error('Edge function error:', functionError);
+        if (!functionResult || !functionResult.success) {
+          const errorMessage = functionResult?.error || 'Image generation failed';
+          console.error('Edge function returned error:', errorMessage);
+          
+          // Update the database record to reflect the error
+          await supabase
+            .from('generated_images')
+            .update({ 
+              status: 'failed',
+              error_message: errorMessage,
+              updated_at: new Date().toISOString()
+            })
+            .eq('id', insertedImage.id);
+          
+          throw new Error(errorMessage);
+        }
+      } catch (invokeError) {
+        console.error('Error invoking Edge Function:', invokeError);
         
         // Update the database record to reflect the error
         await supabase
           .from('generated_images')
           .update({ 
             status: 'failed',
-            error_message: functionError.message,
+            error_message: invokeError instanceof Error ? invokeError.message : 'Failed to invoke Edge Function',
             updated_at: new Date().toISOString()
           })
           .eq('id', insertedImage.id);
         
-        throw new Error(`Image generation failed: ${functionError.message}`);
+        throw new Error(`Failed to invoke Edge Function: ${invokeError instanceof Error ? invokeError.message : 'Unknown error'}`);
       }
 
-      if (!functionResult.success) {
-        // Update the database record to reflect the error
-        await supabase
-          .from('generated_images')
-          .update({ 
-            status: 'failed',
-            error_message: functionResult.error,
-            updated_at: new Date().toISOString()
-          })
-          .eq('id', insertedImage.id);
-        
-        throw new Error(functionResult.error || 'Image generation failed');
-      }
+      console.log('Edge Function called successfully, image generation in progress');
 
-      console.log('Image generation completed successfully');
-
+      // The Edge Function will update the database asynchronously
+      // Return the imageId so the frontend can start polling
       return {
         success: true,
         imageId: insertedImage.id,
-        imageUrl: functionResult.imageUrl
+        imageUrl: null // Will be set when generation completes
       };
 
     } catch (error) {

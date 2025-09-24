@@ -24,6 +24,7 @@ export default function ImageGeneratorScreen() {
     error,
     generatedImage,
     currentImageId,
+    status,
     generateImage,
     clearImage,
     clearError,
@@ -220,7 +221,10 @@ export default function ImageGeneratorScreen() {
             <View style={styles.loadingIndicator}>
               <LoadingSpinner size={20} color={colors.primary} />
               <Text style={[commonStyles.textSecondary, styles.loadingText]}>
-                This may take up to 30 seconds...
+                {status === 'generating' ? 'Generating image...' : 'Starting generation...'}
+              </Text>
+              <Text style={[commonStyles.textSecondary, styles.loadingSubtext]}>
+                This may take up to 30 seconds
               </Text>
             </View>
           )}
@@ -400,6 +404,13 @@ const styles = {
     marginTop: 8,
     textAlign: 'center' as const,
     fontSize: 14,
+    fontWeight: '600' as const,
+  },
+  loadingSubtext: {
+    marginTop: 4,
+    textAlign: 'center' as const,
+    fontSize: 12,
+    opacity: 0.7,
   },
   resultHeader: {
     flexDirection: 'row' as const,

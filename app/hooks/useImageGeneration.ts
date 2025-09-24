@@ -8,6 +8,7 @@ export interface UseImageGenerationReturn {
   error: string | null;
   generatedImage: string | null;
   currentImageId: string | null;
+  status: string | null;
   generateImage: (params: GenerateImageParams) => Promise<GenerateImageResult>;
   pollImageStatus: (imageId: string) => Promise<void>;
   clearImage: () => void;
@@ -20,6 +21,7 @@ export function useImageGeneration(): UseImageGenerationReturn {
   const [error, setError] = useState<string | null>(null);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [currentImageId, setCurrentImageId] = useState<string | null>(null);
+  const [status, setStatus] = useState<string | null>(null);
 
   const generateImage = useCallback(async (params: GenerateImageParams): Promise<GenerateImageResult> => {
     console.log('Starting image generation with params:', params);
@@ -27,6 +29,7 @@ export function useImageGeneration(): UseImageGenerationReturn {
     setError(null);
     setGeneratedImage(null);
     setCurrentImageId(null);
+    setStatus('pending');
 
     try {
       const result = await ImageService.generateImage(params);
@@ -69,6 +72,7 @@ export function useImageGeneration(): UseImageGenerationReturn {
         }
 
         console.log('Image status:', imageData.status);
+        setStatus(imageData.status);
 
         switch (imageData.status) {
           case 'completed':
@@ -113,6 +117,7 @@ export function useImageGeneration(): UseImageGenerationReturn {
     setCurrentImageId(null);
     setError(null);
     setIsLoading(false);
+    setStatus(null);
   }, []);
 
   const clearError = useCallback(() => {
@@ -147,6 +152,7 @@ export function useImageGeneration(): UseImageGenerationReturn {
     error,
     generatedImage,
     currentImageId,
+    status,
     generateImage,
     pollImageStatus,
     clearImage,
